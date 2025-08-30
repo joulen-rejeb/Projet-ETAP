@@ -1,0 +1,21 @@
+<h2>Mes produits – Lieu : {{ lieu }}</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Produit</th><th>Qté</th><th>Emplacement</th><th>Zone</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for p in produits %}
+    <tr>
+      <td>{{ p.nameProduct }}</td>
+      <td>{{ p.quantity }}</td>
+      <td>{{ p.emplacement.name }}</td>
+      <td>{{ p.emplacement.zone }}</td>
+    </tr>
+  {% else %}
+    <tr><td colspan="4">Aucun produit pour ce lieu.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>

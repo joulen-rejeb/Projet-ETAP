@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Produits{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+        <h1 class="my-4">Liste des Produits</h1>
+
+        <!-- ========== Info Boxes Produits ========== -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6 col-12">
+                <div class="info-box text-bg-primary">
+                    <span class="info-box-icon">
+                        <i class="bi bi-box-seam"></i>
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Produits Total</span>
+                        <span class="info-box-number">{{ produits|length }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-12">
+                <div class="info-box text-bg-success">
+                    <span class="info-box-icon">
+                        <i class="bi bi-check-circle"></i>
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">En Stock</span>
+                        <span class="info-box-number">
+                            {{ produits|filter(p => p.quantity > 0)|length }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-12">
+                <div class="info-box text-bg-warning">
+                    <span class="info-box-icon">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Presque Épuisé</span>
+                        <span class="info-box-number">
+                            {{ produits|filter(p => p.quantity > 0 and p.quantity <= 5)|length }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 col-12">
+                <div class="info-box text-bg-danger">
+                    <span class="info-box-icon">
+                        <i class="bi bi-x-circle-fill"></i>
+                    </span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">Rupture</span>
+                        <span class="info-box-number">
+                            {{ produits|filter(p => p.quantity == 0)|length }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+     </div>
+{% endblock %}

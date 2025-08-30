@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Emplacements{% endblock %}
+
+{% block body %}
+    <h1>Liste des Emplacements</h1>
+
+    <a href="{{ path('emplacement_new') }}" class="btn btn-success mb-3">Ajouter un emplacement</a>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Zone</th>
+                <th>Nom</th>
+                <th>Image</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for emplacement in emplacements %}
+                <tr>
+                    <td>
+                        <a href="{{ path('produits_par_emplacement', {'id': emplacement.idEmplacement}) }}">
+                            {{ emplacement.zone }}
+                        </a>
+                    </td>
+                    <td>
+                        <a href="{{ path('produits_par_emplacement', {'id': emplacement.idEmplacement}) }}">
+                            {{ emplacement.name }}
+                        </a>
+                    </td>
+                    <td>
+                        {% if emplacement.photoEmplacement %}
+                            <img src="{{ asset('uploads/emplacements/' ~ emplacement.photoEmplacement) }}" width="100">
+                        {% else %}
+                            Aucune image
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('emplacement_edit', {id: emplacement.idEmplacement}) }}" class="btn btn-primary btn-sm">Modifier</a>
+
+                        <form method="post" action="{{ path('emplacement_delete', {id: emplacement.idEmplacement}) }}" style="display:inline-block;" onsubmit="return confirm('Confirmer la suppression ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ emplacement.idEmplacement) }}">
+                            <button class="btn btn-danger btn-sm">Supprimer</button>
+                        </form>
+                        
+                        <!-- Nouveau bouton pour ajouter un produit -->
+                        <a href="{{ path('app_produits_new', {'emplacement_id': emplacement.idEmplacement}) }}" 
+                           class="btn btn-success btn-sm mt-1">
+                            Ajouter un produit
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr><td colspan="4" class="text-center">Aucun emplacement trouvé.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Produits de {{ emplacement.name }}{% endblock %}
+
+{% block body %}
+    <h1>Produits dans {{ emplacement.name }} ({{ emplacement.zone }})</h1>
+
+    <div class="text-left mt-4">
+<a href="{{ path('app_produits_new', {
+    'emplacement_id': emplacement.idEmplacement,
+    'from': 'emplacement',
+    'parent_id': emplacement.idEmplacement
+}) }}" class="btn btn-success">
+    ➕ Ajouter un produit
+</a>
+
+
+    </div> 
+ <div class="mt-5"></div>
+
+<div class="row g-4">
+      {% for produit in produits %}
+      <div class="col-12 col-sm-6 col-md-3 mb-4">
+        <div class="info-box shadow-sm d-flex align-items-center" style="min-height: 90px;">
+          <a href="{{ path('produits_par_emplacement', {'id': produit.id}) }}" 
+             class="info-box-icon text-bg-primary d-flex justify-content-center align-items-center" 
+             style="width: 100px; height: 90px; overflow: hidden; border-radius: 3px; text-decoration: none;">
+            {% if produit.photoProduct %}
+              <img src="{{ asset('uploads/produits/' ~ produit.photoProduct) }}" 
+                   alt="Photo" 
+                   style="width: 100%; height: 100%; object-fit: cover;">
+            {% else %}
+              <i class="bi bi-geo-alt-fill fs-3 text-white"></i>
+            {% endif %}
+          </a>
+
+
+         <div class="info-box-content flex-grow-1 d-flex justify-content-between align-items-left ms-3">
+            <div style="min-width: 0;">
+              <a href="{{ path('produits_par_emplacement', {'id': produit.id}) }}" 
+                 class="text-decoration-none text-dark"
+                 style="font-weight: 600; font-size: 1.1rem; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                {{ produit.nameProduct }}
+              </a>
+              <div style="font-weight: 400; font-size: 0.9rem; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                Quantity : {{ produit.quantity }}
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center ms-auto">
+             
+              
+    <a href="{{ path('app_produits_edit', {
+    'id': produit.id,
+    'from': 'emplacement',
+    'parent_id': emplacement.idEmplacement
+}) }}" class="text-primary me-2">
+    <i class="bi bi-pencil-square fs-5"></i>
+</a>
+
+<form method="post" action="{{ path('app_produits_delete', {
+    'id': produit.id,
+    'from': 'emplacement',
+    'parent_id': emplacement.idEmplacement
+}) }}" onsubmit="return confirm('Supprimer ?');">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
+    <button class="btn p-0 text-danger">
+        <i class="bi bi-trash-fill fs-5"></i>
+    </button>
+</form>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <div class="col-12">
+        <p class="text-muted">Aucun produit enregistré.</p>
+      </div>
+    {% endfor %}
+  </div>
+
+
+{% endblock %}
+
+

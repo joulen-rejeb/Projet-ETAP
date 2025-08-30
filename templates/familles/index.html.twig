@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des familles{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <h1 class="mb-4">Liste des catégories de produits</h1>
+
+    <div class="mb-4">
+        <a href="{{ path('familles_new') }}" class="btn btn-success">➕ Ajouter une nouvelle famille</a>
+    </div>
+
+    <div class="row">
+        {% for famille in familles %}
+            <div class="col-lg-3 col-6 mb-4">
+                <div class="small-box text-bg-primary shadow-sm">
+                    <div class="inner">
+                        <h3>{{ famille.nameCategory }}</h3>
+                        <p>{{ nbProduitsParFamille[famille.idFamilles] }} produits</p>
+                    </div>
+
+                    {% if famille.photoFamille %}
+                        <img src="{{ asset('uploads/familles/' ~ famille.photoFamille) }}"
+                             class="img-fluid"
+                             alt="{{ famille.nameCategory }}"
+                             style="height: 200px; object-fit: cover;">
+                    {% else %}
+                        <div style="height: 200px; background: #eee; display: flex; align-items: center; justify-content: center;">
+                            Pas d'image
+                        </div>
+                    {% endif %}
+
+                    <div class="small-box-footer d-flex flex-column gap-1 p-2">
+                        <a href="{{ path('familles_show', {'id': famille.idFamilles}) }}" class="link-light">
+                            👁 Voir
+                        </a>
+                        <a href="{{ path('familles_edit', {'id': famille.idFamilles}) }}" class="link-light">
+                            ✏️ Modifier
+                        </a>
+                        <form method="post" action="{{ path('familles_delete', {'id': famille.idFamilles}) }}" onsubmit="return confirm('Supprimer cette famille ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ famille.idFamilles) }}">
+                            <button class="btn btn-sm btn-link text-white p-0 border-0">
+                                🗑 Supprimer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

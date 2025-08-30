@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter une Livraison{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-6">
+            <h4 class="mb-4">Ajouter une Livraison</h4>
+
+            {{ form_start(form) }}
+
+            <div class="mb-3">
+                {{ form_label(form.product, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.product, {'attr': {'class': 'form-select', 'id':'product_select'}}) }}
+                {{ form_errors(form.product) }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Zone</label>
+                <input id="emplacement_info" class="form-control" disabled />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Famille</label>
+                <input id="famille_info" class="form-control" disabled />
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.quantity, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.quantity, {'attr': {'class':'form-control'}}) }}
+                {{ form_errors(form.quantity) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.entryDate, 'Date de livraison', {'label_attr': {'class':'form-label'}}) }}
+                {{ form_widget(form.entryDate, {'attr': {'class':'form-control'}}) }}
+                {{ form_errors(form.entryDate) }}
+            </div>
+
+            <button type="submit" class="btn btn-outline-dark">Enregistrer la livraison</button>
+
+            {{ form_end(form) }}
+
+            <div class="mt-3">
+                <a href="{{ path('home') }}" class="btn btn-link text-decoration-none">
+                    ← Retour à la liste
+                </a>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const sel = document.getElementById('product_select');
+  const emplacementInput = document.getElementById('emplacement_info');
+  const familleInput = document.getElementById('famille_info');
+
+  function updateInfo() {
+    const opt = sel.selectedOptions[0];
+    if (!opt) { 
+        emplacementInput.value = ''; 
+        familleInput.value = ''; 
+        return; 
+    }
+
+    const zone = opt.dataset.zone || '';
+    const famille = opt.dataset.famille || '';
+
+    emplacementInput.value = zone;
+    familleInput.value = famille;
+  }
+
+  sel.addEventListener('change', updateInfo);
+  updateInfo(); // pour initialiser si un produit est déjà sélectionné
+});
+
+</script>
+
+
+{% endblock %}

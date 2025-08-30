@@ -1,0 +1,14 @@
+<h2>Mes emplacements – Lieu : {{ lieu }}</h2>
+
+<div class="grid">
+  {% for e in emplacements %}
+    <div class="card">
+      <img src="{{ asset('uploads/emplacements/' ~ e.photoEmplacement) }}" alt="{{ e.name }}">
+      <div>
+        <strong>{{ e.zone }}</strong> — Emplacement {{ e.name }}
+      </div>
+    </div>
+  {% else %}
+    <p>Aucun emplacement pour ce lieu.</p>
+  {% endfor %}
+</div>

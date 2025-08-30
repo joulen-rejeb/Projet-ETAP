@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}📦 Historique des livraisons{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold">📜 Historique des livraisons</h1>
+        <a href="{{ path('app_livraison_new') }}" class="btn btn-success shadow-sm">
+            ➕ Nouvelle livraison
+        </a>
+    </div>
+
+    {# Messages flash #}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show shadow-sm" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="card shadow-lg rounded-3">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">📅 Date</th>
+                        <th scope="col">👤 Responsable</th>
+                        <th scope="col">📦 Produit</th>
+                        <th scope="col">🔢 Quantité</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for livraison in livraisons %}
+                    <tr>
+                        <td>
+                            <span class="badge bg-secondary">
+                                {{ livraison.entryDate|date('d/m/Y H:i') }}
+                            </span>
+                        </td>
+                        <td>
+                            {% set hommes = ['omar', 'ahmed', 'ali'] %}
+                            {% if livraison.user.username in hommes %}
+                                👨 Mr <strong>{{ livraison.user.username }}</strong>
+                            {% else %}
+                                👩 Mme <strong>{{ livraison.user.username }}</strong>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <i class="bi bi-box-seam text-primary"></i> 
+                            {{ livraison.product.nameProduct }}
+                        </td>
+                        <td>
+                            <span class="badge bg-info">
+                                {{ livraison.quantity }} unités
+                            </span>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">
+                            Aucune livraison enregistrée.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau prélèvement{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Effectuer un nouveau prélèvement</h1>
+
+    {# Messages flash pour succès ou erreur #}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">{{ message }}</div>
+        {% endfor %}
+    {% endfor %}
+
+    {{ form_start(form) }}
+
+    <table class="table table-bordered" id="prelevement-table">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody data-prototype="{{ form_widget(form.prelevementProduits.vars.prototype)|e('html_attr') }}">
+            {% for ppForm in form.prelevementProduits %}
+                <tr>
+                    <td>{{ form_widget(ppForm.produit) }}</td>
+                    <td>{{ form_widget(ppForm.quantite) }}</td>
+                    <td><button type="button" class="btn btn-danger btn-remove">❌</button></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button type="button" class="btn btn-secondary" id="add-product">➕ Ajouter un produit</button>
+    <button class="btn btn-success">✅ Valider le prélèvement</button>
+
+    {{ form_end(form) }}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const tableBody = document.querySelector('#prelevement-table tbody');
+    const addBtn = document.querySelector('#add-product');
+    let index = tableBody.querySelectorAll('tr').length;
+
+    addBtn.addEventListener('click', () => {
+        const prototype = tableBody.dataset.prototype.replace(/__name__/g, index);
+        const newRow = document.createElement('tr');
+        newRow.innerHTML = `
+            <td>${prototype.match(/<select.*select>/s)[0]}</td>
+            <td>${prototype.match(/<input.*>/s)[0]}</td>
+            <td><button type="button" class="btn btn-danger btn-remove">❌</button></td>
+        `;
+        tableBody.appendChild(newRow);
+        index++;
+    });
+
+    tableBody.addEventListener('click', (e) => {
+        if (e.target.classList.contains('btn-remove')) {
+            e.target.closest('tr').remove();
+        }
+    });
+});
+</script>
+{% endblock %}

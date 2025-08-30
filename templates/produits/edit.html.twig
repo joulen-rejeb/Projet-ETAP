@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le produit{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h4 class="mb-4">Modifier le produit</h4>
+
+    {{ form_start(form) }}
+
+    {# Nom du produit #}
+    <div class="mb-3">
+        {{ form_label(form.nameProduct, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.nameProduct, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.nameProduct) }}
+    </div>
+
+ <div class="mb-3">
+    {{ form_label(form.quantityInitial, null, {'label_attr': {'class': 'form-label'}}) }}
+    {{ form_widget(form.quantityInitial, {'attr': {'class': 'form-control', 'readonly': 'readonly'}}) }}
+    {{ form_errors(form.quantityInitial) }}
+</div>
+
+
+    {# Emplacement #}
+    <div class="mb-3">
+        {{ form_label(form.emplacement, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.emplacement, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.emplacement) }}
+    </div>
+
+    {# Familles #}
+    <div class="mb-3">
+        {{ form_label(form.familles, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.familles, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.familles) }}
+    </div>
+
+    {# Bloc image actuelle + upload #}
+    <div class="mb-3">
+        {{ form_label(form.photoProduct, null, {'label_attr': {'class': 'form-label'}}) }}
+
+        {% if produit.photoProduct %}
+            <div class="mb-2">
+                <p class="mb-1">Image actuelle :</p>
+                <img src="{{ asset('uploads/produits/' ~ produit.photoProduct) }}"
+                     alt="Image actuelle"
+                     class="img-fluid rounded border"
+                     style="max-height: 200px;">
+            </div>
+        {% endif %}
+
+        {{ form_widget(form.photoProduct, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.photoProduct) }}
+    </div>
+
+    {# Bouton Modifier #}
+    <button type="submit" class="btn btn-outline-dark">Modifier</button>
+
+    {{ form_end(form) }}
+
+    <div class="mt-3">
+        <a href="{{ path('app_produits_index') }}" class="btn btn-link text-decoration-none">
+            ← Retour à la liste
+        </a>
+    </div>
+</div>
+{% endblock %}

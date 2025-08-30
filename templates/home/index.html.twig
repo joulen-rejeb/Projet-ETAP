@@ -1,0 +1,179 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+
+<div class="d-flex gap-3 mb-4">
+
+    {# Si ROLE_FOURNITURES OU un rôle "admin-like" → bouton Livraison #}
+    {% if is_granted('ROLE_FOURNITURES') 
+          or is_granted('ROLE_ADMIN') 
+          or is_granted('ROLE_NETTOYAGE') 
+          or is_granted('ROLE_BUREATIQUE') 
+          or is_granted('ROLE_INFORMATIQUE') %}
+        <a href="{{ path('app_livraison_new') }}" 
+           class="btn btn-lg d-flex align-items-center gap-2 shadow-sm"
+           style="background: linear-gradient(45deg, #28a745, #20c997); color: white; font-weight: 600; border-radius: 8px; transition: all 0.2s ease;">
+            <i class="bi bi-truck"></i> Livraison
+        </a>
+    {% endif %}
+
+    {# Si ROLE_CONSOMMABLES OU un rôle "admin-like" → bouton Prélèvement #}
+    {% if is_granted('ROLE_CONSOMMABLES') 
+          or is_granted('ROLE_ADMIN') 
+          or is_granted('ROLE_NETTOYAGE') 
+          or is_granted('ROLE_BUREATIQUE') 
+          or is_granted('ROLE_INFORMATIQUE') %}
+        <a href="{{ path('prelevement_new') }}" 
+           class="btn btn-lg d-flex align-items-center gap-2 shadow-sm"
+           style="background: linear-gradient(45deg, #007bff, #0dcaf0); color: white; font-weight: 600; border-radius: 8px; transition: all 0.2s ease;">
+            <i class="bi bi-box-arrow-down"></i> Prélèvement
+        </a>
+    {% endif %}
+
+</div>
+
+
+
+
+<h2 class="mt-5">Emplacements pour {{ app.user ? app.user.lieu : 'tous les sites' }}</h2>
+<div class="mb-4">
+  <a href="{{ path('emplacement_new') }}" class="btn btn-success">➕ Ajouter un emplacement</a>
+</div>
+<div class="row">
+  {% for emplacement in emplacements %}
+    <div class="col-12 col-sm-6 col-md-3 mb-4">
+      <div class="info-box shadow-sm d-flex align-items-center" style="min-height: 100px;">
+        <a href="{{ path('produits_par_emplacement', {'id': emplacement.idEmplacement}) }}" 
+           class="info-box-icon text-bg-primary d-flex justify-content-center align-items-center" 
+           style="width: 100px; height: 100px; overflow: hidden; border-radius: 3px; text-decoration: none;">
+          {% if emplacement.photoEmplacement %}
+            <img src="{{ asset('uploads/emplacements/' ~ emplacement.photoEmplacement) }}" 
+                 alt="Photo" 
+                 style="width: 100px; height: 100px; object-fit: cover; border-radius: 3px;">
+          {% else %}
+            <i class="bi bi-geo-alt-fill fs-3 text-white"></i>
+          {% endif %}
+        </a>
+
+        <div class="info-box-content flex-grow-1 d-flex justify-content-between align-items-left ms-3">
+          <div style="min-width: 0;">
+            <a href="{{ path('produits_par_emplacement', {'id': emplacement.idEmplacement}) }}" 
+               class="text-decoration-none text-dark"
+               style="font-weight: 600; font-size: 1.1rem; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              {{ emplacement.name }}
+            </a>
+            <div style="font-weight: 400; font-size: 0.9rem; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              Zone : {{ emplacement.zone }}
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center ms-auto">
+            <a href="{{ path('emplacement_edit', {'id': emplacement.idEmplacement}) }}" 
+               class="text-primary me-2" 
+               title="Modifier">
+              <i class="bi bi-pencil-square fs-5"></i>
+            </a>
+
+            <form method="post" action="{{ path('emplacement_delete', {'id': emplacement.idEmplacement}) }}" 
+                  style="display:inline-block" 
+                  onsubmit="return confirm('Supprimer ?');">
+              <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ emplacement.idEmplacement) }}">
+              <button class="btn p-0 text-danger" title="Supprimer">
+                <i class="bi bi-trash-fill fs-5"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="col-12">
+      <p class="text-muted">Aucun emplacement enregistré.</p>
+    </div>
+  {% endfor %}
+</div>
+
+
+<h2 class="mb-4">Familles</h2>
+
+<div class="mb-4">
+    <a href="{{ path('familles_new') }}" class="btn btn-success">
+        ➕ Ajouter une nouvelle famille
+    </a>
+</div>
+
+<div class="row g-4">
+    {% for famille in familles %}
+        <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+            <div class="card h-100 shadow-sm border-0 family-card">
+                <!-- Image -->
+                <a href="{{ path('produits_par_famille', {'id': famille.idFamilles}) }}" class="d-block">
+                    <img src="{{ asset('uploads/familles/' ~ famille.photoFamille) }}"
+                         alt="{{ famille.nameCategory }}"
+                         class="card-img-top"
+                         style="height: 200px; object-fit: cover; border-top-left-radius: .5rem; border-top-right-radius: .5rem;">
+                </a>
+
+                <!-- Titre -->
+                <div class="card-body text-center">
+                    <h5 class="card-title mb-2" style="font-weight: 600;">
+                        {{ famille.nameCategory }}
+                    </h5>
+                </div>
+
+                <!-- Footer avec liens -->
+                <div class="card-footer bg-transparent border-0 d-flex justify-content-center align-items-center gap-2 pb-3">
+                    
+                    <!-- Voir produits -->
+                    <a href="{{ path('produits_par_famille', {'id': famille.idFamilles}) }}"
+                       class="btn btn-outline-primary btn-sm">
+                        Voir les produits <i class="bi bi-arrow-right"></i>
+                    </a>
+
+                    <!-- Modifier -->
+                    <a href="{{ path('familles_edit', {'id': famille.idFamilles}) }}" 
+                       class="text-primary" 
+                       title="Modifier">
+                        <i class="bi bi-pencil-square fs-5"></i>
+                    </a>
+
+                    <!-- Supprimer -->
+                    <form method="post" 
+                          action="{{ path('familles_delete', {'id': famille.idFamilles}) }}" 
+                          style="display:inline-block" 
+                          onsubmit="return confirm('Supprimer cette famille ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ famille.idFamilles) }}">
+                        <button class="btn p-0 text-danger" title="Supprimer">
+                            <i class="bi bi-trash-fill fs-5"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="col-12">
+            <p class="text-muted">Aucune famille enregistrée.</p>
+        </div>
+    {% endfor %}
+</div>
+
+
+<style>
+/* Effet hover sur les cartes */
+.family-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.family-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+
+</style>
+
+
+
+
+{% endblock %}
